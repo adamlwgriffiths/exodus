@@ -35,6 +35,7 @@ the current date, an incrementing number, or both, as the prefix followed by a s
 description.
 
 Eg:
+
 * 2015_10_12_add_address_to_user.py
 * 01_add_address_to_user.py, 02_add_rating_to_movie.py
 
