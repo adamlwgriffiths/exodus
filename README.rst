@@ -4,6 +4,9 @@
 EXODUS
 ======
 
+.. image:: https://travis-ci.org/someones/exodus.svg?branch=master
+    :target: https://travis-ci.org/someones/exodus
+
 Mass Migrations for all!
 
 Exodus is a simple framework that allows you to define data migrations and apply
