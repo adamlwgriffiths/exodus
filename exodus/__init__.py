@@ -96,16 +96,30 @@ class BaseMigration(object):
         raise NotImplementedError('Must define can_migrate_database method')
 
     def can_migrate_object(self, obj):
+        clsname = self.get_object_classname(obj)
+
         if not self.classes:
             return False
-        clsname = obj.__class__.__name__
-        return clsname in self.classes
+
+        if clsname not in self.classes:
+            return False
+
+        # check if we can migrate the object
+        # this is an optional function
+        func = self._can_migrate_object_func(clsname)
+        if func:
+            return func(obj)
+
+        return True
+
+    def get_object_classname(self, obj):
+        return obj.__class__.__name__
 
     def migrate_database(self, adapter):
         raise NotImplementedError('Migration not implemented')
 
     def migrate_object(self, obj):
-        clsname = obj.__class__.__name__
+        clsname = self.get_object_classname(obj)
 
         # check if we can migrate the object
         # this is an optional function
@@ -118,6 +132,8 @@ class BaseMigration(object):
         func = self._migrate_object_func(clsname)
         if func:
             return func(obj)
+
+        return obj
 
     def _can_migrate_object_name(self, clsname):
         return 'can_migrate_{}'.format(clsname)

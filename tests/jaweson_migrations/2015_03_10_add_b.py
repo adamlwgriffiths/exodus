@@ -10,26 +10,8 @@ class Migration(BaseMigration):
     def can_migrate_database(self, adapter):
         return self.version > adapter.db.get('version', None)
 
-    def can_migrate_object(self, obj):
-        if not self.classes:
-            return False
-        clsname = obj['__class__']
-        return clsname in self.classes
-
-    def migrate_object(self, obj):
-        clsname = obj['__class__']
-
-        # check if we can migrate the object
-        # this is an optional function
-        func = self._can_migrate_object_func(clsname)
-        if func:
-            if not func(obj):
-                return obj
-
-        # perform the migration
-        func = self._migrate_object_func(clsname)
-        if func:
-            return func(obj)
+    def get_object_classname(self, obj):
+        return obj['__class__']
 
     def migrate_database(self, adapter):
         # migrate the objects
