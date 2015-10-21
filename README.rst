@@ -39,9 +39,6 @@ Eg:
 A migration should inherit from BaseMigration and must define a number of variables
 and methods::
 
-
-::
-
     from exodus import BaseMigration
 
     class Migration(BaseMigration):
