@@ -29,7 +29,11 @@ class Exodus(object):
         path = path or 'migrations'
 
         # get a list of files in the path we've specified
-        files = sorted(filter(cls.pattern.match, os.listdir(path)))
+        # ignore anything except .py files and files starting with _
+        files = os.listdir(path)
+        files = filter(cls.pattern.match, files)
+        files = filter(lambda x: not x.startswith('_'), files)
+        files = sorted(files)
 
         module = path.replace('/', '.')
         strip_extension = lambda x: os.path.splitext(x)[0]
