@@ -71,7 +71,8 @@ class Exodus(object):
     def migrate_object(cls, obj):
         for migration in cls.migrations:
             if migration.can_migrate_object(obj):
-                migration.migrate_object(obj)
+                obj = migration.migrate_object(obj)
+        return obj
 
     @classmethod
     def highest_version(cls):
