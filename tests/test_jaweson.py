@@ -74,7 +74,7 @@ class TestJawesonMigration(unittest.TestCase):
         # individual migration
         a = json.loads(jaweson.dumps(TestObject()))
         assert 'b' not in a
-        Exodus.migrate_object(a)
+        a = Exodus.migrate_object(a)
         assert 'b' in a
 
         b = json.loads(jaweson.dumps(AnotherObject()))
