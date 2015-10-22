@@ -44,10 +44,24 @@ class Exodus(object):
         map(force_reload, map(import_file, files))
 
     @classmethod
+    def can_migrate_database(cls, adapter):
+        for migration in cls.migrations:
+            if migration.can_migrate_database(adapter):
+                return True
+        return False
+
+    @classmethod
     def migrate_database(cls, adapter):
         for migration in cls.migrations:
             if migration.can_migrate_database(adapter):
                 migration.migrate_database(adapter)
+
+    @classmethod
+    def can_migrate_object(cls, obj):
+        for migration in cls.migrations:
+            if migration.can_migrate_object(obj):
+                return True
+        return False
 
     @classmethod
     def migrate_object(cls, obj):
