@@ -15,7 +15,7 @@ setup(
     license='BSD',
     author='Adam Griffiths',
     url='https://github.com/adamlwgriffiths/exodus',
-    install_requires=['blist'],
+    install_requires=['blist', 'import_file'],
     platforms=['any'],
     test_suite='tests',
     packages=['exodus'],

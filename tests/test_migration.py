@@ -87,3 +87,9 @@ class TestMigration(unittest.TestCase):
         assert set(adapter.db.keys()) == set(['b', 'c', 'version'])
         assert len(filter(lambda obj: hasattr(obj, 'b'), adapter.db['c'])) == len(adapter.db['c'])
         assert adapter.db['version'] == Exodus.highest_version()
+
+    def test_reload(self):
+        assert len(Exodus.migrations) == 2
+        Exodus.migrations = None
+        Exodus.load_migrations('tests/migrations')
+        assert len(Exodus.migrations) == 2

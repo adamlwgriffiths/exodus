@@ -4,6 +4,7 @@ import re
 import importlib
 from blist import sortedlist
 from .version import __version__
+from import_file import import_file
 
 
 class sortedmigrationlist(sortedlist):
@@ -35,17 +36,8 @@ class Exodus(object):
         files = filter(lambda x: not x.startswith('_'), files)
         files = sorted(files)
 
-        module = path.replace('/', '.')
-        strip_extension = lambda x: os.path.splitext(x)[0]
-        path_to_module = lambda f: '.'.join([module, strip_extension(f)])
-        import_file = lambda m: importlib.import_module(path_to_module(m))
-        force_reload = lambda m: reload(m)
-
-        # migrations will automatically register themselves at import time
-        # force a reload, if we don't modules will never be re-imported and
-        # thus will not run their meta class, and therefore not be re-registered
-        # if we re-run the load_migrations method
-        map(force_reload, map(import_file, files))
+        abs_files = map(lambda x: os.path.join(path, x), files)
+        map(import_file, abs_files)
 
     @classmethod
     def can_migrate_database(cls, adapter):
