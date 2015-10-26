@@ -19,14 +19,14 @@ class Exodus(object):
 
     @classmethod
     def register_migration(cls, migration):
+        if cls.migrations is None:
+            cls.migrations = sortedmigrationlist()
+
         if migration not in cls.migrations:
             cls.migrations.add(migration)
 
     @classmethod
     def load_migrations(cls, path=None):
-        if not cls.migrations:
-            cls.migrations = sortedmigrationlist()
-
         path = path or 'migrations'
 
         # get a list of files in the path we've specified
