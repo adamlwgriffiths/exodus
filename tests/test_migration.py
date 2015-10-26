@@ -93,3 +93,6 @@ class TestMigration(unittest.TestCase):
         Exodus.migrations = None
         Exodus.load_migrations('tests/migrations')
         assert len(Exodus.migrations) == 2
+
+    def test_module_classname(self):
+        assert '.' not in self.migration1().func_safe_classname('test.my_class')

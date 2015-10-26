@@ -126,6 +126,9 @@ class BaseMigration(object):
     def get_object_classname(self, obj):
         return obj.__class__.__name__
 
+    def func_safe_classname(self, clsname):
+        return clsname.replace('.', '_')
+
     def migrate_database(self, adapter):
         raise NotImplementedError('Migration not implemented')
 
@@ -147,13 +150,13 @@ class BaseMigration(object):
         return obj
 
     def _can_migrate_object_name(self, clsname):
-        return 'can_migrate_{}'.format(clsname)
+        return self.func_safe_classname('can_migrate_{}'.format(clsname))
 
     def _can_migrate_object_func(self, clsname):
         return getattr(self, self._can_migrate_object_name(clsname), None)
 
     def _migrate_object_name(self, clsname):
-        return 'migrate_{}'.format(clsname)
+        return self.func_safe_classname('migrate_{}'.format(clsname))
 
     def _migrate_object_func(self, clsname):
         return getattr(self, self._migrate_object_name(clsname), None)
