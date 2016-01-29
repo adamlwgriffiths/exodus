@@ -57,51 +57,51 @@ and methods::
         # `can_migrate_object` method
         classes = ['TestObject']
 
-    def can_migrate_database(self, adapter):
-        '''Returns True if the database can be migrated, False otherwise.
-        This function should use your own logic to check the database version
-        or other 'signal' that the migration is appropriate for your database.
-        '''
-        return self.version > adapter['version']
-
-    def migrate_database(self, adapter):
-        '''Performs a full migration on the database.
-        This can include moving or updating objects.
-        For each object requiring a migration, the method `migrate_object` should
-        be called.
-        By default, migrate_object will look for a function matching `migrate_<class name>`.
-        If the `classes` variable defines a class name, but there is no corresponding `migrate_<class name>`,
-        an exception will be thrown on construction.
-        Before calling `migrate_<class name>`, a check if made for a function matching
-        the name `can_migrate_<class name>`, if found (it is entirely optional to define)
-        it is called with the object as a parameter. If False, the migration is
-        not performed.
-        Ensure any migration version signals are set at the end of the function.
-        '''
-        adapter['objects'] = adapter['old_objects']
-        del adapter['old_objects']
-
-        for obj in adapter['objects']:
-            self.migrate_object(obj)
-        adapter['version'] = self.version
-
-    def can_migrate_TestObject(self, obj):
-        '''Called when an object of type TestObject is sent to `migrate_object`.
-        Returns True if the migration should be applied to the object.
-        This function is entirely optional. If not defined, the migration will be
-        performed regardless.
-        '''
-        return obj.version < self.version
-
-    def migrate_TestObject(self, obj):
-        '''Performs a migration on the object.
-        If the `classes` variable defines a class name, but there is no corresponding `migrate_<class name>`,
-        an exception will be thrown on construction.
-        Ensure any migration version signals are set at the end of the function.
-        '''
-        obj.my_value = obj.my_value + 1
-        obj.version = self.version
-        return obj
+        def can_migrate_database(self, adapter):
+            '''Returns True if the database can be migrated, False otherwise.
+            This function should use your own logic to check the database version
+            or other 'signal' that the migration is appropriate for your database.
+            '''
+            return self.version > adapter['version']
+    
+        def migrate_database(self, adapter):
+            '''Performs a full migration on the database.
+            This can include moving or updating objects.
+            For each object requiring a migration, the method `migrate_object` should
+            be called.
+            By default, migrate_object will look for a function matching `migrate_<class name>`.
+            If the `classes` variable defines a class name, but there is no corresponding `migrate_<class name>`,
+            an exception will be thrown on construction.
+            Before calling `migrate_<class name>`, a check if made for a function matching
+            the name `can_migrate_<class name>`, if found (it is entirely optional to define)
+            it is called with the object as a parameter. If False, the migration is
+            not performed.
+            Ensure any migration version signals are set at the end of the function.
+            '''
+            adapter['objects'] = adapter['old_objects']
+            del adapter['old_objects']
+    
+            for obj in adapter['objects']:
+                self.migrate_object(obj)
+            adapter['version'] = self.version
+    
+        def can_migrate_TestObject(self, obj):
+            '''Called when an object of type TestObject is sent to `migrate_object`.
+            Returns True if the migration should be applied to the object.
+            This function is entirely optional. If not defined, the migration will be
+            performed regardless.
+            '''
+            return obj.version < self.version
+    
+        def migrate_TestObject(self, obj):
+            '''Performs a migration on the object.
+            If the `classes` variable defines a class name, but there is no corresponding `migrate_<class name>`,
+            an exception will be thrown on construction.
+            Ensure any migration version signals are set at the end of the function.
+            '''
+            obj.my_value = obj.my_value + 1
+            obj.version = self.version
+            return obj
 
 
 Overriding Migration Logic
