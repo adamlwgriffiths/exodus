@@ -96,3 +96,11 @@ class TestMigration(unittest.TestCase):
 
     def test_module_classname(self):
         assert '.' not in self.migration1().func_safe_classname('test.my_class')
+
+    def test_no_migrations(self):
+        Exodus.migrations = None
+        adapter = DictAdapter({
+            'a': [TestObject() for x in range(10)],
+            'b': [AnotherObject() for x in range(5)],
+        })
+        Exodus.migrate_database(adapter)
