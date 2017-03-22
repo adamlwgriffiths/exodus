@@ -12,20 +12,26 @@ class sortedmigrationlist(sortedlist):
         kwargs['key'] = lambda x: x.version
         super(sortedmigrationlist, self).__init__(*args, **kwargs)
 
+def migrations_check(fn):
+    def decorator(cls, *args, **kwargs):
+        if cls.migrations is None:
+            cls.migrations = sortedmigrationlist()
+        return fn(cls, *args, **kwargs)
+    return decorator
+
 
 class Exodus(object):
     migrations = sortedmigrationlist()
     pattern = re.compile(r'^.+\.py$')
 
     @classmethod
+    @migrations_check
     def register_migration(cls, migration):
-        if cls.migrations is None:
-            cls.migrations = sortedmigrationlist()
-
         if migration not in cls.migrations:
             cls.migrations.add(migration)
 
     @classmethod
+    @migrations_check
     def load_migrations(cls, path=None):
         path = path or 'migrations'
 
@@ -40,6 +46,7 @@ class Exodus(object):
         map(import_file, abs_files)
 
     @classmethod
+    @migrations_check
     def can_migrate_database(cls, adapter):
         for migration in cls.migrations:
             if migration.can_migrate_database(adapter):
@@ -47,12 +54,14 @@ class Exodus(object):
         return False
 
     @classmethod
+    @migrations_check
     def migrate_database(cls, adapter):
         for migration in cls.migrations:
             if migration.can_migrate_database(adapter):
                 migration.migrate_database(adapter)
 
     @classmethod
+    @migrations_check
     def can_migrate_object(cls, obj):
         for migration in cls.migrations:
             if migration.can_migrate_object(obj):
@@ -60,6 +69,7 @@ class Exodus(object):
         return False
 
     @classmethod
+    @migrations_check
     def migrate_object(cls, obj):
         for migration in cls.migrations:
             if migration.can_migrate_object(obj):
@@ -67,6 +77,7 @@ class Exodus(object):
         return obj
 
     @classmethod
+    @migrations_check
     def highest_version(cls):
         if cls.migrations:
             return cls.migrations[-1].version
